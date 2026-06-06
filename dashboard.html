@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard - Inclusão Digital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+      <div class="container">
+        <a class="navbar-brand" href="#">Inclusão Digital</a>
+        <div class="d-flex">
+          <button id="logout-btn" class="btn btn-outline-secondary">Sair</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-4">
+      <div class="course-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="course-title">Uso Básico do Windows</h1>
+            <p class="course-desc mb-0">Aprenda operações básicas do Windows para melhorar inclusão digital e acessibilidade.</p>
+          </div>
+          <div style="width:320px">
+            <div class="d-flex align-items-center mb-2">
+              <div class="me-3 text-end">
+                <div class="fs-5" id="modules-completed">0/<span id="modules-total">0</span></div>
+                <div class="text-muted small">módulos concluídos</div>
+              </div>
+              <div style="flex:1">
+                <div class="progress" style="height:18px">
+                  <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%">0%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row module-grid" id="modules-container"></div>
+    </main>
+
+    <script src="assets/js/vendor-loader.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="assets/js/modules-data.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+  </body>
+</html>

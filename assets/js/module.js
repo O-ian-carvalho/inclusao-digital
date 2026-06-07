@@ -46,56 +46,84 @@
   const container = document.getElementById('module-content')
   container.innerHTML = ''
 
-  const header = el('div','mb-3')
-  header.appendChild(el('h2','', `Módulo ${mod.number} - ${mod.title}`))
-  header.appendChild(el('p','text-muted', mod.full))
+  const header = el('div','module-header fade-up')
+  const titleRow = el('div','d-flex align-items-center gap-2')
+  const iconBadge = el('span','badge bg-primary bg-opacity-10 text-primary','Módulo '+mod.number)
+  titleRow.appendChild(iconBadge)
+  header.appendChild(titleRow)
+  header.appendChild(el('h2','mt-2', mod.title))
+  const fullParts = (mod.full || '').split('\n\n')
+  fullParts.forEach(part => {
+    if(part.trim()) header.appendChild(el('p','module-full mb-2', part.trim()))
+  })
 
-  const video = el('div','mb-3')
-  if(mod.video){
-    video.innerHTML = '<div class="ratio ratio-16x9"><iframe src="'+mod.video+'" title="Vídeo" allowfullscreen></iframe></div>'
+  const videosContainer = el('div','videos-container fade-up')
+  const modVideos = mod.videos || (mod.video ? [{ title: '', url: mod.video }] : [])
+
+  if(modVideos.length > 0){
+    modVideos.forEach((v, i) => {
+      const wrapper = el('div','video-wrapper mb-3')
+      if(v.url){
+        wrapper.innerHTML = v.title ? '<div class="video-label mb-2 fw-semibold small text-muted">' + v.title + '</div>' : ''
+        wrapper.innerHTML += '<div class="ratio ratio-16x9"><iframe src="' + v.url + '" title="' + (v.title || 'Vídeo') + '" allowfullscreen></iframe></div>'
+      } else {
+        const placeholder = el('div','video-placeholder')
+        placeholder.innerHTML = '<i class="bi bi-play-circle me-2"></i>' + (v.title || 'Vídeo não disponível — espaço reservado')
+        wrapper.appendChild(placeholder)
+        if(v.title) wrapper.insertBefore(el('div','video-label mb-2 fw-semibold small text-muted', v.title), placeholder)
+      }
+      videosContainer.appendChild(wrapper)
+    })
   } else {
-    video.appendChild(el('div','video-placeholder','Vídeo não disponível — espaço reservado'))
+    videosContainer.appendChild(el('div','video-placeholder','<i class="bi bi-play-circle me-2"></i>Vídeo não disponível — espaço reservado'))
   }
 
-  const btnBar = el('div','d-flex justify-content-between align-items-center')
+  const actions = el('div','module-actions fade-up')
   const status = el('div','')
-  const btn = el('button','btn btn-success','Marcar como concluído')
+  const btn = el('button','btn btn-success','<i class="bi bi-check-lg me-1"></i>Marcar como concluído')
 
-  btnBar.appendChild(status); btnBar.appendChild(btn)
+  actions.appendChild(status); actions.appendChild(btn)
 
   container.appendChild(header)
-  container.appendChild(video)
-  container.appendChild(btnBar)
+  container.appendChild(videosContainer)
+  container.appendChild(actions)
+
+  // stagger
+  container.querySelectorAll('.fade-up').forEach((el, i) => {
+    el.style.animationDelay = (i * 0.1) + 's'
+  })
 
   async function refreshStatus(){
     const docId = `${user.uid}_${mod.id}`
     const doc = await db.collection('user_progress').doc(docId).get()
     if(doc.exists && doc.data().completed){
-      status.innerHTML = '<span class="badge bg-success">Concluído</span>'
+      status.innerHTML = '<span class="badge bg-success fs-6 px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i>Concluído</span>'
       btn.disabled = true
     } else {
-      status.innerHTML = '<span class="badge bg-secondary">Pendente</span>'
+      status.innerHTML = '<span class="badge bg-secondary fs-6 px-3 py-2"><i class="bi bi-clock me-1"></i>Pendente</span>'
       btn.disabled = false
     }
   }
 
   btn.addEventListener('click', async ()=>{
     btn.disabled = true
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Salvando...'
     try{
       const docId = `${user.uid}_${mod.id}`
-      const payload = { user_id: user.uid, module_id: mod.id, completed: true, completed_at: new Date().toISOString() }
+      const payload = { user_id: user.uid, user_email: user.email || '', module_id: mod.id, completed: true, completed_at: new Date().toISOString() }
       await db.collection('user_progress').doc(docId).set(payload, { merge: true })
       await refreshStatus()
-      // success toast
+      // toast notification
       const t = document.createElement('div')
-      t.className = 'alert alert-success mt-3'
-      t.textContent = 'Módulo marcado como concluído! Próximo liberado.'
-      container.insertBefore(t, container.children[2])
-      setTimeout(()=> t.remove(), 3000)
+      t.className = 'toast-notification'
+      t.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i> Módulo concluído! Próximo liberado.'
+      document.body.appendChild(t)
+      setTimeout(()=> t.remove(), 3500)
     }catch(e){
       console.error(e)
       alert('Erro ao salvar progresso')
       btn.disabled = false
+      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Marcar como concluído'
     }
   })
 

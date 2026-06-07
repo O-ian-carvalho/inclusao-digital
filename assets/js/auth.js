@@ -3,11 +3,48 @@
   const loginForm = document.getElementById('login-form')
   const signupForm = document.getElementById('signup-form')
 
-  function showAlert(msg){
+  function getFirebaseErrorMessage(err){
+    const code = err.code || ''
+    const map = {
+      'auth/user-not-found': 'Email não encontrado. Verifique se digitou corretamente.',
+      'auth/wrong-password': 'Senha incorreta. Tente novamente.',
+      'auth/invalid-email': 'Email inválido. Digite um email válido.',
+      'auth/invalid-credential': 'Email ou senha incorretos.',
+      'auth/invalid-login-credentials': 'Email ou senha incorretos.',
+      'auth/user-disabled': 'Esta conta foi desativada.',
+      'auth/too-many-requests': 'Muitas tentativas seguidas. Aguarde alguns minutos e tente novamente.',
+      'auth/email-already-in-use': 'Este email já está cadastrado.',
+      'auth/weak-password': 'Senha muito fraca. Use pelo menos 6 caracteres.',
+      'auth/network-request-failed': 'Erro de conexão. Verifique sua internet.',
+      'auth/internal-error': 'Erro interno do servidor. Tente novamente mais tarde.',
+    }
+    return map[code] || err.message || 'Ocorreu um erro inesperado. Tente novamente.'
+  }
+
+  function showAlert(msg, type){
     const a = document.getElementById('alert')
     if(!a) return
-    a.textContent = msg
+    a.className = 'alert d-flex align-items-center gap-2'
+    const icon = type === 'success' ? 'bi-check-circle-fill text-success' : 'bi-exclamation-triangle-fill text-danger'
+    a.innerHTML = '<i class="bi ' + icon + '"></i><span>' + msg + '</span>'
     a.classList.remove('d-none')
+  }
+
+  function hideAlert(){
+    const a = document.getElementById('alert')
+    if(a) a.classList.add('d-none')
+  }
+
+  function setLoading(form, loading){
+    const btn = form.querySelector('button[type="submit"]')
+    if(!btn) return
+    btn.disabled = loading
+    if(loading){
+      btn.dataset.originalHtml = btn.innerHTML
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ' + (signupForm && form === signupForm ? 'Criando...' : 'Entrando...')
+    } else {
+      btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML
+    }
   }
 
   async function waitForFirebase(){
@@ -29,17 +66,35 @@
 
   const auth = window.firebaseAuth
 
+  // Clear alert on input
+  document.addEventListener('input', function(e){
+    if(e.target.closest('form')) hideAlert()
+  })
+
   if(signupForm){
     signupForm.addEventListener('submit', async (e)=>{
       e.preventDefault()
-      const email = document.getElementById('email').value
+      hideAlert()
+      setLoading(signupForm, true)
+      const email = document.getElementById('email').value.trim()
       const password = document.getElementById('password').value
       try{
         const userCred = await auth.createUserWithEmailAndPassword(email, password)
         if(!userCred || !userCred.user) throw new Error('Erro ao criar usuário')
+        try{
+          const db = window.firestore
+          if(db && typeof db.collection === 'function'){
+            await db.collection('users').doc(userCred.user.uid).set({
+              uid: userCred.user.uid,
+              email: userCred.user.email,
+              created_at: new Date().toISOString()
+            })
+          }
+        }catch(e){ /* fallback silencioso */ }
         location.href = 'dashboard.html'
       }catch(err){
-        showAlert(err.message || JSON.stringify(err))
+        showAlert(getFirebaseErrorMessage(err))
+        setLoading(signupForm, false)
       }
     })
   }
@@ -47,13 +102,16 @@
   if(loginForm){
     loginForm.addEventListener('submit', async (e)=>{
       e.preventDefault()
-      const email = document.getElementById('email').value
+      hideAlert()
+      setLoading(loginForm, true)
+      const email = document.getElementById('email').value.trim()
       const password = document.getElementById('password').value
       try{
         await auth.signInWithEmailAndPassword(email, password)
         location.href = 'dashboard.html'
       }catch(err){
-        showAlert(err.message || JSON.stringify(err))
+        showAlert(getFirebaseErrorMessage(err))
+        setLoading(loginForm, false)
       }
     })
   }

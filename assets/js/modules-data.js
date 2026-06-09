@@ -20,7 +20,7 @@ A Barra de Tarefas exibe os programas que estão abertos e permite alternar entr
 
 Para abrir um programa, clique no botão do Menu Iniciar, encontre o programa desejado e clique sobre ele. Para fechá-lo, clique no "X" no canto superior direito da janela do programa.`,
     videos: [
-      { title: 'Usando o Menu Iniciar, Barra de Tarefas e abrindo/fechando programas', url: '' }
+      { title: 'Usando o Menu Iniciar, Barra de Tarefas e abrindo/fechando programas', url: 'https://www.youtube.com/embed/9ysirUYv2Wo' }
     ]
   },
   {
@@ -39,7 +39,7 @@ A resolução da tela controla a nitidez das imagens. Em Configurações > Siste
 
 O brilho da tela pode ser ajustado para evitar cansaço visual. Em notebooks, use as teclas de função (como F5 e F6) ou vá em Configurações > Sistema > Tela e use o controle deslizante de brilho.`,
     videos: [
-      { title: 'Ajustando ícones, textos, escala, resolução e brilho', url: '' }
+      { title: 'Ajustando ícones, textos, escala, resolução e brilho', url: 'https://www.youtube.com/embed/5LWPDH3Y-XI' }
     ]
   },
   {
@@ -58,8 +58,8 @@ A Digitação por Voz permite escrever textos falando. Pressione Tecla Windows +
 
 Além disso, você pode personalizar o ponteiro do mouse para facilitar a visualização: vá em Configurações > Acessibilidade > Tamanho do ponteiro do mouse e ajuste o tamanho e a cor. Escolha entre branco, preto ou cores invertidas para melhor contraste.`,
     videos: [
-      { title: 'Habilitando Narrador, Digitação por Voz e Teclado Virtual', url: '' },
-      { title: 'Personalizando o ponteiro do mouse (tamanho e cor)', url: '' }
+      { title: 'Habilitando Narrador, Digitação por Voz e Teclado Virtual', url: 'https://www.youtube.com/embed/FaJK_HXo1LQ' },
+      { title: 'Personalizando o ponteiro do mouse (tamanho e cor)', url: 'https://www.youtube.com/embed/Wg9FBRhv-ZE' }
     ]
   },
   {
@@ -78,8 +78,7 @@ Para trocar o papel de parede, clique com o botão direito na área de trabalho 
 
 O Windows também gerencia dispositivos conectados. Vá em Configurações > Bluetooth e dispositivos para ver o que está conectado (mouse, teclado, fone de ouvido). Para conectar um novo dispositivo Bluetooth, ative o Bluetooth, clique em "Adicionar dispositivo" e siga as instruções.`,
     videos: [
-      { title: 'Ajustando volume, idioma e papel de parede', url: '' },
-      { title: 'Gerenciando dispositivos e conectando Bluetooth', url: '' }
+      { title: 'Ajustando volume, idioma, papel de parede e conectando Bluetooth', url: 'https://www.youtube.com/embed/-AQZwDQuRcQ' }
     ]
   },
   {
@@ -98,7 +97,7 @@ Para copiar um arquivo ou pasta, clique com o botão direito sobre ele e escolha
 
 Para recortar (mover) um arquivo, use "Recortar" (Ctrl + X) em vez de Copiar. Para renomear, clique com o botão direito e escolha "Renomear". Para excluir, clique com o botão direito e escolha "Excluir" (ou pressione a tecla Delete). Os arquivos excluídos vão para a Lixeira e podem ser recuperados se necessário.`,
     videos: [
-      { title: 'Usando o Explorador, renomeando, copiando, recortando, colando e criando pastas', url: '' }
+      { title: 'Usando o Explorador, renomeando, copiando, recortando, colando e criando pastas', url: 'https://www.youtube.com/embed/tjmloMatrk8' }
     ]
   }
 ]
